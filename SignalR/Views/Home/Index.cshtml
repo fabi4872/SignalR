@@ -1,11 +1,13 @@
-﻿@{
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <h5 style="font-weight: bold; padding-left: 15px;" class="mb-3 mt-4">VENTAS</h5>
 <div class="container">
     <div id="ventas" class="row">
-        
+
     </div>
 </div>
 
@@ -14,8 +16,10 @@
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
 <script>
+    let valorEndpointConfiguracion = '@Configuration["EndpointVentaVehiculoHub"]';
+    let valorMetodoConfiguracion = '@Configuration["MetodoVentaVehiculoHub"]';
     var connection = new signalR.HubConnectionBuilder()
-        .withUrl("/VentaVehiculoHub")
+        .withUrl(valorEndpointConfiguracion)
         .build();
 
     connection.start().then(function () {
@@ -25,7 +29,7 @@
     });
 
     // Método por el cual se recibe la información
-    connection.on("Receive", function (Id, Origen, Tipo, Marca, Modelo, Precio, Fecha) {
+    connection.on(valorMetodoConfiguracion, function (Id, Origen, Tipo, Marca, Modelo, Precio, Fecha) {
         let divVentaVehiculo = document.createElement("div");
         divVentaVehiculo.className = "col-12 col-sm-12 col-md-6 col-lg-4 mt-3";
         divVentaVehiculo.innerHTML = `

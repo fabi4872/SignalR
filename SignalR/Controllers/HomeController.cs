@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SignalR.Models;
 using System;
@@ -13,10 +14,12 @@ namespace SignalR.Controllers
     public class HomeController : Controller
     {
         private readonly IHubContext<VentaVehiculoHub> _ventaVehiculoHub;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(IHubContext<VentaVehiculoHub> ventaVehiculoHub)
+        public HomeController(IHubContext<VentaVehiculoHub> ventaVehiculoHub, IConfiguration configuration)
         {
             _ventaVehiculoHub = ventaVehiculoHub;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -46,8 +49,16 @@ namespace SignalR.Controllers
                 ventaVehiculo.Id = ventaVehiculo.Id.Substring(0, ventaVehiculo.Id.Length - 18);
                 ventaVehiculo.Fecha = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
 
-                await _ventaVehiculoHub.Clients.All.SendAsync("Receive", ventaVehiculo.Id, ventaVehiculo.Origen, ventaVehiculo.Tipo,
-                    ventaVehiculo.Marca, ventaVehiculo.Modelo, ventaVehiculo.Precio, ventaVehiculo.Fecha);
+                // Convertir el precio a decimal
+                if (decimal.TryParse(ventaVehiculo.Precio, out decimal precioDecimal))
+                {
+                    // Formatear el precio
+                    string precioFormateado = precioDecimal.ToString("#,##0.00");
+
+                    // Enviar el precio formateado a través de SignalR
+                    await _ventaVehiculoHub.Clients.All.SendAsync(_configuration["MetodoVentaVehiculoHub"], ventaVehiculo.Id, ventaVehiculo.Origen, ventaVehiculo.Tipo,
+                        ventaVehiculo.Marca, ventaVehiculo.Modelo, precioFormateado, ventaVehiculo.Fecha);
+                }
             }
             
             return View("VentaVehiculoForm");

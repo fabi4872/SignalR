@@ -55,7 +55,7 @@ namespace SignalR
 
                 // Agregar la ruta por la cual los clientes van a entrar al HUB
                 // Endpoint que va a ser la conexión con el HUB
-                endpoints.MapHub<VentaVehiculoHub>("/VentaVehiculoHub");
+                endpoints.MapHub<VentaVehiculoHub>(Configuration["EndpointVentaVehiculoHub"]);
             });
         }
     }

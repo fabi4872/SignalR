@@ -1,10 +1,12 @@
-﻿@{
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+
+@{
     ViewData["Title"] = "Privacy Policy";
 }
 
 <h5 style="font-weight: bold; padding-left: 15px;" class="mb-3 mt-4">GRILLA</h5>
-<div class="container" style="overflow: auto;">
-    <table id="grilla" class="table table-striped mt-4">
+<div class="container mt-4" style="overflow: auto;">
+    <table id="grilla" class="table table-striped">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -17,7 +19,6 @@
             </tr>
         </thead>
         <tbody id="grilla-body">
-            
         </tbody>
     </table>
 </div>
@@ -27,8 +28,10 @@
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
 <script>
+    let valorEndpointConfiguracion = '@Configuration["EndpointVentaVehiculoHub"]';
+    let valorMetodoConfiguracion = '@Configuration["MetodoVentaVehiculoHub"]';
     var connection = new signalR.HubConnectionBuilder()
-        .withUrl("/VentaVehiculoHub")
+        .withUrl(valorEndpointConfiguracion)
         .build();
 
     connection.start().then(function () {
@@ -38,7 +41,7 @@
     });
 
     // Método por el cual se recibe la información
-    connection.on("Receive", function (Id, Origen, Tipo, Marca, Modelo, Precio, Fecha) {
+    connection.on(valorMetodoConfiguracion, function (Id, Origen, Tipo, Marca, Modelo, Precio, Fecha) {
         let trVentaVehiculoRow = document.createElement("tr");
         trVentaVehiculoRow.innerHTML = `
             <td>${Id}</td>
