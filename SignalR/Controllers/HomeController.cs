@@ -36,15 +36,20 @@ namespace SignalR.Controllers
 
         public async Task<IActionResult> AddVentaVehiculo(VentaVehiculo ventaVehiculo)
         {
-            ventaVehiculo.Origen = "INTERNO";
-            ventaVehiculo.Tipo = ventaVehiculo.Tipo.ToUpper();
-            ventaVehiculo.Marca = ventaVehiculo.Marca.ToUpper();
-            ventaVehiculo.Modelo = ventaVehiculo.Modelo.ToUpper();
-            ventaVehiculo.Id = Guid.NewGuid().ToString();
-            ventaVehiculo.Id = ventaVehiculo.Id.Substring(0, ventaVehiculo.Id.Length - 18);
-            ventaVehiculo.Fecha = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            await _ventaVehiculoHub.Clients.All.SendAsync("Receive", ventaVehiculo.Id, ventaVehiculo.Origen, ventaVehiculo.Tipo, 
-                ventaVehiculo.Marca, ventaVehiculo.Modelo, ventaVehiculo.Precio, ventaVehiculo.Fecha);
+            if (ModelState.IsValid && ventaVehiculo.Tipo != null && ventaVehiculo.Marca != null && ventaVehiculo.Modelo != null)
+            {
+                ventaVehiculo.Origen = "INTERNO";
+                ventaVehiculo.Tipo = ventaVehiculo.Tipo.ToUpper();
+                ventaVehiculo.Marca = ventaVehiculo.Marca.ToUpper();
+                ventaVehiculo.Modelo = ventaVehiculo.Modelo.ToUpper();
+                ventaVehiculo.Id = Guid.NewGuid().ToString();
+                ventaVehiculo.Id = ventaVehiculo.Id.Substring(0, ventaVehiculo.Id.Length - 18);
+                ventaVehiculo.Fecha = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+
+                await _ventaVehiculoHub.Clients.All.SendAsync("Receive", ventaVehiculo.Id, ventaVehiculo.Origen, ventaVehiculo.Tipo,
+                    ventaVehiculo.Marca, ventaVehiculo.Modelo, ventaVehiculo.Precio, ventaVehiculo.Fecha);
+            }
+            
             return View("VentaVehiculoForm");
         }
 

@@ -1,6 +1,54 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<h5 style="font-weight: bold; padding-left: 15px;" class="mb-3 mt-4">GRILLA</h5>
+<div class="container" style="overflow: auto;">
+    <table id="grilla" class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Origen</th>
+                <th scope="col">Vehículo</th>
+                <th scope="col">Marca</th>
+                <th scope="col">Modelo</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Fecha</th>
+            </tr>
+        </thead>
+        <tbody id="grilla-body">
+            
+        </tbody>
+    </table>
+</div>
+
+
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+<script>
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/VentaVehiculoHub")
+        .build();
+
+    connection.start().then(function () {
+        console.log("Conexión exitosa");
+    }).catch(function (error) {
+        console.log("Conexión fallida: " + error);
+    });
+
+    // Método por el cual se recibe la información
+    connection.on("Receive", function (Id, Origen, Tipo, Marca, Modelo, Precio, Fecha) {
+        let trVentaVehiculoRow = document.createElement("tr");
+        trVentaVehiculoRow.innerHTML = `
+            <td>${Id}</td>
+            <td>${Origen}</td>
+            <td>${Tipo}</td>
+            <td>${Marca}</td>
+            <td>${Modelo}</td>
+            <td>${Precio}</td>
+            <td>${Fecha}</td>
+        `;
+        document.getElementById("grilla-body").appendChild(trVentaVehiculoRow);
+    });
+</script>
