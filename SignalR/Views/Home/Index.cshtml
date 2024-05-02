@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h5 style="font-weight: bold; padding-left: 15px;" class="mb-3 mt-4">VENTAS</h5>
+<div class="container">
+    <div id="ventas" class="row">
+        
+    </div>
+</div>
+
+
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+<script>
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/VentaVehiculoHub")
+        .build();
+
+    connection.start().then(function () {
+        console.log("Conexión exitosa");
+    }).catch(function (error) {
+        console.log("Conexión fallida: " + error);
+    });
+
+    // Método por el cual se recibe la información
+    connection.on("Receive", function (Id, Origen, Tipo, Marca, Modelo, Precio, Fecha) {
+        let divVentaVehiculo = document.createElement("div");
+        divVentaVehiculo.className = "col-12 col-sm-12 col-md-6 col-lg-4 mt-3";
+        divVentaVehiculo.innerHTML = `
+                <div class="card" style="box-shadow: 0 .5rem .5rem #CCC;">
+                    <div class="card-header" style="background-color: #0069D9; color: white; font-weight: bold;">
+                        <div class="row d-flex justify-content-between align-items-center px-2">
+                            ${Tipo}
+                            <div style="font-size: .7rem;" class="alert alert-secondary px-2 py-2 m-0" role="alert">
+                                ${Origen}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div style="padding-left: 20px; height: 2rem;" class="row d-flex align-items-center">
+                            <small style="font-weight: bold; margin-right: .5rem;">Código: </small><p class="card-text">${Id}</p>
+                        </div>
+                        <div style="padding-left: 20px; height: 2rem;" class="row d-flex align-items-center">
+                            <small style="font-weight: bold; margin-right: .5rem;">Marca: </small><p class="card-text">${Marca}</p>
+                        </div>
+                        <div style="padding-left: 20px; height: 2rem;" class="row d-flex align-items-center">
+                            <small style="font-weight: bold; margin-right: .5rem;">Modelo: </small><p class="card-text">${Modelo}</p>
+                        </div>
+                        <div style="padding-left: 20px; height: 2rem;" class="row d-flex align-items-center">
+                            <small style="font-weight: bold; margin-right: .5rem;">Precio: </small><p class="card-text">${Precio}</p>
+                        </div>
+                        <div style="padding-left: 20px; height: 2rem;" class="row d-flex align-items-center">
+                            <small style="font-weight: bold; margin-right: .5rem;">Fecha: </small><p class="card-text">${Fecha}</p>
+                        </div>
+                    </div>
+                </div>
+        `;
+        document.getElementById("ventas").appendChild(divVentaVehiculo);
+    });
+</script>

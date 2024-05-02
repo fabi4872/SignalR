@@ -1,0 +1,38 @@
+﻿@model SignalR.Models.VentaVehiculo
+
+<form asp-controller="Home" asp-action="AddVentaVehiculo" method="post">
+    <h5 style="font-weight: bold; padding-left: 15px;" class="mb-3 mt-4">FORMULARIO - VENTA</h5>
+    <div class="form-group mt-2">
+        <label for="tipo" class="col-sm-2 col-form-label">Tipo</label>
+        <div class="col-sm-6">
+            <input id="tipo" asp-for="Tipo" type="text" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group mt-2">
+        <label for="marca" class="col-sm-2 col-form-label">Marca</label>
+        <div class="col-sm-6">
+            <input id="marca" asp-for="Marca" type="text" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group mt-2">
+        <label for="modelo" class="col-sm-2 col-form-label">Modelo</label>
+        <div class="col-sm-6">
+            <input id="modelo" asp-for="Modelo" type="text" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group mt-2">
+        <label for="precio" class="col-sm-2 col-form-label">Precio</label>
+        <div class="col-sm-6">
+            <input id="precio" asp-for="Precio" type="text" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group text-center mt-4">
+        <div class="col-sm-6">
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+    </div>
+</form>
